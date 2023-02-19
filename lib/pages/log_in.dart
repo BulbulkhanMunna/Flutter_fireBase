@@ -4,9 +4,11 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'forgot_pw_page.dart';
+
 class Login extends StatefulWidget {
   final VoidCallback showRegisterPage;
-  const Login({super.key,required this.showRegisterPage});
+  const Login({super.key, required this.showRegisterPage});
 
   @override
   State<Login> createState() => _LoginState();
@@ -18,11 +20,20 @@ class _LoginState extends State<Login> {
   final _passwordController = TextEditingController();
 
   Future signIn() async {
-    await FirebaseAuth.instance
-        .signInWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim(),
-          );
+    //loading circle
+    showDialog(context: context, 
+    builder: (context){
+      return Center(child: CircularProgressIndicator());
+
+    },);
+
+
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
+    );
+
+    Navigator.of(context).pop();
   }
 
   @override
@@ -67,7 +78,6 @@ class _LoginState extends State<Login> {
                   height: 50,
                 ),
 
-
                 //email textfield
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -94,7 +104,6 @@ class _LoginState extends State<Login> {
                   height: 10,
                 ),
 
-
                 //password textfield
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -116,6 +125,35 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                 ),
+                SizedBox(
+                  height: 10,
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return ForgotPasswordPage();
+                              },
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Forgot password?',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
 
                 SizedBox(
                   height: 10,
@@ -125,14 +163,13 @@ class _LoginState extends State<Login> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: GestureDetector(
-                    
-                   onTap: signIn,
+                    onTap: signIn,
                     child: Container(
-                      
                       padding: EdgeInsets.all(18),
                       decoration: BoxDecoration(
-                          color: Colors.lightGreen,
-                          borderRadius: BorderRadius.circular(12),),
+                        color: Colors.lightGreen,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       child: Center(
                           child: Text(
                         'Sign In',
@@ -160,10 +197,11 @@ class _LoginState extends State<Login> {
                     ),
                     GestureDetector(
                       onTap: widget.showRegisterPage,
-                      child: Text(' Register now',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, color: Colors.white),
-                              ),
+                      child: Text(
+                        ' Register now',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
                     ),
                   ],
                 ),
